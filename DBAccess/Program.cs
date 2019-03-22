@@ -18,6 +18,7 @@ namespace DBAccess
             temp.DBAvgContractDur();//Average Contract Duration
             temp.DBAvgContValue();//Average Contract value by client
             temp.DBNumActiveContract();//Gives number of active contracts
+            temp.DBCalcTimeRemaining("3");//Gives time remaining for the Contract_ID passed to the method
             String x = "0";//string variable used by user to navigate console inputs
             String name;//stores user input to be passed to query
             String nameTarget;
@@ -191,5 +192,21 @@ namespace DBAccess
                 connection.Close();//close connection
             }
         }//method that returns the number of active contracts
+
+        private void DBCalcTimeRemaining(String ID)
+        {
+            using (OleDbCommand command = new OleDbCommand())//create command object
+            {
+                ConnectionOpen();//open connection
+                command.Connection = connection;//sets command connection value
+                command.CommandText = "SELECT DateDiff('d', Date(), EndDate) AS Expr1, Contract_ID FROM Contract_info WHERE Contract_ID = " + ID;//sets command command text
+                OleDbDataReader reader = command.ExecuteReader();//creates reader object
+                while (reader.Read())//while there are more entries
+                {
+                    Console.WriteLine("The time remaining for Contract ID " + reader["Contract_ID"].ToString() + " is " + reader["Expr1"].ToString() + " days.");
+                }
+                connection.Close();//close connection
+            }
+        }//method that returns the number the time remaining on a the passed Contract ID
     }
 }

@@ -14,7 +14,8 @@ namespace DBAccess
         {
             Program temp = new Program();//creates an instance of program called temp
             temp.DBSelectAll();//calls DBSelectAll method of the instance of program
-            temp.DBAvgNumContracts();
+            temp.DBAvgNumContracts();//Average Number of contracts per client
+            temp.DBAvgContractDur();//Average Contract Duration
             String x = "0";//string variable used by user to navigate console inputs
             String name;//stores user input to be passed to query
             String nameTarget;
@@ -136,6 +137,22 @@ namespace DBAccess
                 while (reader.Read())//while there are more entries
                 {
                     Console.WriteLine("The average number of contracts per client is " + reader["Expr1"].ToString());
+                }
+                connection.Close();//close connection
+            }
+        }//method that calculates the average number of contracts held by clients
+
+        private void DBAvgContractDur()
+        {
+            using (OleDbCommand command = new OleDbCommand())//create command object
+            {
+                ConnectionOpen();//open connection
+                command.Connection = connection;//sets command connection value
+                command.CommandText = "SELECT AVG(DateDiff('d', StartDate, EndDate)) AS Expr1 FROM Contract_info";//sets command command text
+                OleDbDataReader reader = command.ExecuteReader();//creates reader object
+                while (reader.Read())//while there are more entries
+                {
+                    Console.WriteLine("The average length of a contract is " + reader["Expr1"].ToString() + " days");
                 }
                 connection.Close();//close connection
             }

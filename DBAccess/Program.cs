@@ -14,6 +14,7 @@ namespace DBAccess
         {
             Program temp = new Program();//creates an instance of program called temp
             temp.DBSelectAll();//calls DBSelectAll method of the instance of program
+            temp.DBAvgNumContracts();
             String x = "0";//string variable used by user to navigate console inputs
             String name;//stores user input to be passed to query
             String nameTarget;
@@ -123,5 +124,21 @@ namespace DBAccess
                 connection.Close();
             }
         }//method to delete a row from the Client_Info table
+
+        private void DBAvgNumContracts()
+        {
+            using (OleDbCommand command = new OleDbCommand())//create command object
+            {
+                ConnectionOpen();//open connection
+                command.Connection = connection;//sets command connection value
+                command.CommandText = "SELECT (SELECT COUNT(Contract_ID) FROM Contract_info)/COUNT(Client_ID) AS Expr1 FROM(SELECT DISTINCT Client_ID FROM Contract_info) z";//sets command command text
+                OleDbDataReader reader = command.ExecuteReader();//creates reader object
+                while (reader.Read())//while there are more entries
+                {
+                    Console.WriteLine("The average number of contracts per client is " + reader["Expr1"].ToString());
+                }
+                connection.Close();//close connection
+            }
+        }//method that calculates the average number of contracts held by clients
     }
 }

@@ -16,6 +16,7 @@ namespace DBAccess
             temp.DBSelectAll();//calls DBSelectAll method of the instance of program
             temp.DBAvgNumContracts();//Average Number of contracts per client
             temp.DBAvgContractDur();//Average Contract Duration
+            temp.DBAvgContValue();//Average Contract value by client 
             String x = "0";//string variable used by user to navigate console inputs
             String name;//stores user input to be passed to query
             String nameTarget;
@@ -156,6 +157,23 @@ namespace DBAccess
                 }
                 connection.Close();//close connection
             }
-        }//method that calculates the average number of contracts held by clients
+        }//method that calculates the average duraction of a contract
+
+        private void DBAvgContValue()
+        {
+            using (OleDbCommand command = new OleDbCommand())//create command object
+            {
+                ConnectionOpen();//open connection
+                command.Connection = connection;//sets command connection value
+                command.CommandText = "SELECT SUM(Contract_value)/Count(Client_ID) AS Expr1, Client_ID FROM Contract_info Group By Client_ID";//sets command command text
+                OleDbDataReader reader = command.ExecuteReader();//creates reader object
+                while (reader.Read())//while there are more entries
+                {
+                    Console.WriteLine("The average value of a contract for Client ID " + reader["Client_ID"] + " is " + reader["Expr1"].ToString());
+                }
+                connection.Close();//close connection
+            }
+        }//method that calculates the average value of a contract
+
     }
 }
